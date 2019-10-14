@@ -8,19 +8,35 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      myName: "Zoe"
+      myAppointments: [],
+      lastIndex: 0
     };
   }
+
+  componentDidMount() {
+    fetch("./data.json")
+      .then(response => response.json())
+      .then(result => {
+        const apts = result.map(item => {
+          item.aptId = this.state.lastIndex;
+          this.setState({ lastIndex: this.state.lastIndex + 1 });
+          return item;
+        });
+        this.setState({
+          myAppointments: apts
+        });
+      });
+  }
+
   render() {
     return (
       <main className="page bg-white" id="dentistry">
         <div className="container">
           <div className="col-md-12 bg-white">
             <div className="container">
-              {this.state.myName}
               <AddAppointments />
               <SearchAppointments />
-              <ListAppointments />
+              <ListAppointments appointments={this.state.myAppointments} />
             </div>
           </div>
         </div>
