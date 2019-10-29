@@ -4,6 +4,7 @@ import AddAppointments from "./AddAppointments";
 import SearchAppointments from "./SearchAppointments";
 import ListAppointments from "./ListAppointments";
 import { without } from "lodash";
+// import { isTaggedTemplateExpression } from "@babel/types";
 
 class App extends Component {
   constructor() {
@@ -14,7 +15,26 @@ class App extends Component {
       lastIndex: 0
     };
     this.deleteAppointment = this.deleteAppointment.bind(this);
+    this.toggleForm = this.toggleForm.bind(this);
+    this.addAppointment = this.addAppointment.bind(this);
   }
+
+  toggleForm() {
+    this.setState({
+      formDisplay: !this.state.formDisplay
+    });
+  }
+
+  addAppointment(apt) {
+    let temApts = this.state.myAppointments;
+    apt.aptId = this.state.lastIndex;
+    temApts.unshift(apt);
+    this.setState({
+      myAppointments: temApts,
+      lastIndex: this.state.lastIndex + 1
+    });
+  }
+
   deleteAppointment(apt) {
     let temApts = this.state.myAppointments;
     temApts = without(temApts, apt);
@@ -45,7 +65,11 @@ class App extends Component {
         <div className="container">
           <div className="col-md-12 bg-white">
             <div className="container">
-              <AddAppointments formDisplay={this.state.formDisplay} />
+              <AddAppointments
+                formDisplay={this.state.formDisplay}
+                toggleForm={this.toggleForm}
+                addAppointment={this.addAppointment}
+              />
               <SearchAppointments />
               <ListAppointments
                 appointments={this.state.myAppointments}
